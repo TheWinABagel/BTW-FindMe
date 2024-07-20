@@ -1,6 +1,7 @@
 package com.buuz135.findme.mixin;
 
 import com.buuz135.findme.FindMeClient;
+import com.buuz135.findme.FindMeConfig;
 import com.buuz135.findme.tracking.TrackingList;
 import net.minecraft.src.Gui;
 import net.minecraft.src.GuiContainer;
@@ -20,8 +21,6 @@ public abstract class GuiContainerMixin extends GuiScreen {
 
     @Shadow
     private Slot theSlot;
-    private static final Color findMe$COLOR = new Color(20, 255, 50, 120);
-
     @Inject(method = "drawScreen", at = @At("TAIL"))
     private void findme$resetHoveredStack(int par1, int par2, float par3, CallbackInfo ci) {
         if (this.theSlot != null && !this.theSlot.getHasStack()) {
@@ -32,13 +31,13 @@ public abstract class GuiContainerMixin extends GuiScreen {
     @Inject(method = "drawSlotInventory", at = @At(value = "TAIL"))
     private void findme$setCurrentSlotColor(Slot slot, CallbackInfo ci) {
         if (slot != null && slot.getHasStack() && TrackingList.beingTracked(slot.getStack())) {
-//            Color c = FindMeConfig.CLIENT.getColor();
-            //2014641970
+            Color c = FindMeConfig.CLIENT.getColor();
+
             GL11.glPushMatrix();
             GL11.glTranslated(0.0, 0.0, 300.0);
             int x = slot.xDisplayPosition - 1;
             int y = slot.yDisplayPosition - 1;
-            Gui.drawRect(x, y, x + 18, y + 18, findMe$COLOR.getRGB());
+            Gui.drawRect(x, y, x + 18, y + 18, c.getRGB());
             GL11.glPopMatrix();
         }
     }

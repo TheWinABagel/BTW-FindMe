@@ -2,6 +2,7 @@ package com.buuz135.findme.client;
 
 
 import btw.client.fx.particles.WhiteSmokeFX;
+import com.buuz135.findme.FindMeConfig;
 import net.minecraft.src.Tessellator;
 import net.minecraft.src.World;
 import org.lwjgl.opengl.GL11;
@@ -14,7 +15,7 @@ public class ParticlePosition extends WhiteSmokeFX {
         this.motionX = 0.00;
         this.motionY = 0.00;
         this.motionZ = 0.00;
-        this.particleMaxAge = 20 * 5;
+        this.particleMaxAge = FindMeConfig.MAX_PARTICLE_AGE;
         this.particleScale *= 1.3f;
         this.particleGreen = this.particleBlue = this.particleRed = 0.9f;
     }
