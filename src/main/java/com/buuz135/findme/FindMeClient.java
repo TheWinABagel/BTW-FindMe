@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 @Environment(EnvType.CLIENT)
 public class FindMeClient {
-    public static KeyBinding KEY = new KeyBinding(StatCollector.translateToLocal("key.findme.search"), Keyboard.KEY_Y);
+    public static KeyBinding KEY = new KeyBinding("key.findme.search", Keyboard.KEY_Y);
     public static ItemStack stack = null;
 
     public static void onKeyPressEvent() {

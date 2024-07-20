@@ -24,11 +24,11 @@ public class FindMe extends BTWAddon {
 
     @Override
     public void initialize() {
-        AddonHandler.logMessage(this.getName() + " Version " + this.getVersionString() + " Initializing...");
     }
 
     @Override
     public void preInitialize() {
+        this.modID = "findme";
         registerProperty("RadiusRange", String.valueOf(FindMeConfig.RADIUS_RANGE), "The inventory search radius. Large numbers might cause lag!");
         registerProperty("EnableContainerTracking", String.valueOf(FindMeConfig.CONTAINER_TRACKING), "When enabled, slots containing searched item will be highlighted.");
         registerProperty("ContainerTrackTime", String.valueOf(FindMeConfig.CONTAINER_TRACK_TIME), "The duration in ticks that containers will be tracked. Default is 30 seconds, or 600 ticks");
