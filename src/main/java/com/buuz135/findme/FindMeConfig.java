@@ -20,12 +20,12 @@ public class FindMeConfig {
 
     public Color getColor() {
         if (currentColor == null) {
-//            try {
+            try {
                 currentColor = new Color(RED_COLOR, GREEN_COLOR, BLUE_COLOR, ALPHA_COLOR) /*Color.decode(CONTAINER_HIGHLIGHT_COLOR.toLowerCase())*/;
-//            } catch (NumberFormatException e) {
-//                //FindMe.LOG.error("Unable to parse color value '" + CONTAINER_HIGHLIGHT_COLOR.get() + "'", e);
-//                currentColor = Color.decode("#7814FF32");
-//            }
+            } catch (IllegalArgumentException e) {
+                //FindMe.LOG.error("Unable to parse color value '" + CONTAINER_HIGHLIGHT_COLOR.get() + "'", e);
+                currentColor = Color.decode("#7814FF32");
+            }
         }
         return currentColor;
     }
