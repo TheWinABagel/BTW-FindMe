@@ -1,67 +1,50 @@
 package com.buuz135.findme;
 
-import btw.AddonHandler;
-import btw.BTWAddon;
+import api.BTWAddon;
+import api.config.AddonConfig;
 import com.buuz135.findme.network.PositionRequestMessage;
 import com.buuz135.findme.network.PositionResponseMessage;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class FindMe extends BTWAddon {
-    private Map<String, String> props;
-
-    public FindMe() {
-        super();
-    }
 
     @Override
     public void initialize() {
     }
 
     @Override
-    public void preInitialize() {
-        this.modID = "findme";
-        registerProperty("RadiusRange", String.valueOf(FindMeConfig.RADIUS_RANGE), "The inventory search radius. Large numbers might cause lag!");
-        registerProperty("EnableContainerTracking", String.valueOf(FindMeConfig.CONTAINER_TRACKING), "When enabled, slots containing searched item will be highlighted.");
-        registerProperty("ContainerTrackTime", String.valueOf(FindMeConfig.CONTAINER_TRACK_TIME), "The duration in ticks that containers will be tracked. Default is 30 seconds, or 600 ticks");
-        registerProperty("ParticleSpawnTime", String.valueOf(FindMeConfig.MAX_PARTICLE_AGE), "The duration in ticks that particles will render in containers. Default is 10 seconds, or 200 ticks");
+    public void registerConfigProperties(AddonConfig config) {
+        config.registerInt("RadiusRange", FindMeConfig.RADIUS_RANGE, 0, 100, "The inventory search radius. Large numbers might cause lag!");
+        config.registerBoolean("EnableContainerTracking", FindMeConfig.CONTAINER_TRACKING, "When enabled, slots containing searched item will be highlighted.");
+        config.registerInt("ContainerTrackTime", FindMeConfig.CONTAINER_TRACK_TIME, 0, Integer.MAX_VALUE, "The duration in ticks that containers will be tracked. Default is 30 seconds, or 600 ticks");
+        config.registerInt("ParticleSpawnTime", FindMeConfig.MAX_PARTICLE_AGE, 0, Integer.MAX_VALUE, "The duration in ticks that particles will render in containers. Default is 10 seconds, or 200 ticks");
 
-        registerProperty("ColorRed", String.valueOf(FindMeConfig.RED_COLOR), "RGB values and alpha (how visible it is) of the slot highlight. Valid numbers are from 0-255.");
-        registerProperty("ColorGreen", String.valueOf(FindMeConfig.GREEN_COLOR));
-        registerProperty("ColorBlue", String.valueOf(FindMeConfig.BLUE_COLOR));
-        registerProperty("ColorAlpha", String.valueOf(FindMeConfig.ALPHA_COLOR));
+        config.updatePath("ColorRed", "color.red");
+        config.updatePath("ColorGreen", "color.green");
+        config.updatePath("ColorBlue", "color.blue");
+        config.updatePath("ColorAlpha", "color.alpha");
+
+        config.registerInt("color.red", FindMeConfig.RED_COLOR, 0, 255, "Red value of the slot highlight.", "You can use https://rgbcolorpicker.com/ to find a color.");
+        config.registerInt("color.green", FindMeConfig.GREEN_COLOR, 0, 255, "Green value of the slot highlight.", "You can use https://rgbcolorpicker.com/ to find a color.");
+        config.registerInt("color.blue", FindMeConfig.BLUE_COLOR, 0, 255, "Blue value of the slot highlight.", "You can use https://rgbcolorpicker.com/ to find a color.");
+        config.registerInt("color.alpha", FindMeConfig.ALPHA_COLOR, 0, 255, "Alpha value (how visible it is) of the slot highlight.", "You can use https://rgbcolorpicker.com/ to find a color.");
     }
 
     @Override
-    public void handleConfigProperties(Map<String, String> props) {
-        this.props = props;
-        try {
-            FindMeConfig.RADIUS_RANGE = parseInt("RadiusRange");
-            FindMeConfig.CONTAINER_TRACKING = Boolean.parseBoolean(props.get("EnableContainerTracking"));
-            FindMeConfig.CONTAINER_TRACK_TIME = parseInt("ContainerTrackTime");
-            FindMeConfig.MAX_PARTICLE_AGE = parseInt("ParticleSpawnTime");
+    public void handleConfigProperties(AddonConfig config) {
+        FindMeConfig.RADIUS_RANGE = config.getInt("RadiusRange");
+        FindMeConfig.CONTAINER_TRACKING = config.getBoolean("EnableContainerTracking");
+        FindMeConfig.CONTAINER_TRACK_TIME = config.getInt("ContainerTrackTime");
+        FindMeConfig.MAX_PARTICLE_AGE = config.getInt("ParticleSpawnTime");
 
-            FindMeConfig.RED_COLOR = parseInt("ColorRed");
-            FindMeConfig.GREEN_COLOR = parseInt("ColorGreen");
-            FindMeConfig.BLUE_COLOR = parseInt("ColorBlue");
-            FindMeConfig.ALPHA_COLOR = parseInt("ColorAlpha");
-        }
-        catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private int parseInt(String val) throws NumberFormatException {
-        return Integer.parseInt(props.get(val));
+        FindMeConfig.RED_COLOR = config.getInt("color.red");
+        FindMeConfig.GREEN_COLOR = config.getInt("color.green");
+        FindMeConfig.BLUE_COLOR = config.getInt("color.blue");
+        FindMeConfig.ALPHA_COLOR = config.getInt("color.alpha");
     }
 
     @Override
@@ -82,7 +65,7 @@ public class FindMe extends BTWAddon {
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
-                return false;
+                return true;
             }
         }
         return false;
